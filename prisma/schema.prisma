@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RentalStatus {
+  Draft
+  Active
+  Returned
+}
+
+enum VehicleStatus {
+  Active
+  Rented
+}
+
+model Rental {
+  id            String       @id
+  carId         String
+  customerEmail String
+  startDate     DateTime
+  endDate       DateTime
+  returnedAt    DateTime?
+  odometerStart Int
+  odometerEnd   Int?
+  damageReport  String?
+  status        RentalStatus
+  Car           Car          @relation(fields: [carId], references: [id])
+}
+
+model Car {
+  id       String   @id
+  odometer Int
+  status   VehicleStatus
+  rentals  Rental[]
+}
